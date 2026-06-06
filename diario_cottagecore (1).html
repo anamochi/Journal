@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Diario 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f5f0e8;--surface:#fdfaf4;--surface2:#f9f4ea;
+  --text:#3b2f1e;--muted:#8a7560;--border:#ddd0b8;
+  --sage:#7a9e7e;--sage-light:#c8ddc9;--sage-pale:#eef4ee;
+  --rose:#c17b6e;--rose-pale:#fdf0ee;
+  --honey:#c49a3c;--ink:#4a3828;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px 16px;}
+.top-border{width:100%;height:6px;background:repeating-linear-gradient(90deg,var(--sage) 0,var(--sage) 8px,var(--rose) 8px,var(--rose) 16px,var(--honey) 16px,var(--honey) 24px,var(--sage-light) 24px,var(--sage-light) 32px);margin-bottom:20px;border-radius:2px;}
+.header{text-align:center;margin-bottom:6px;}
+.header h1{font-family:'Lora',serif;font-size:24px;color:var(--ink);}
+.header h1 em{font-style:italic;color:var(--sage);}
+.header .quote{font-family:'Lora',serif;font-size:11px;font-style:italic;color:var(--muted);margin-top:4px;}
+.sync-bar{text-align:center;font-size:10px;color:var(--muted);margin:4px 0 0;min-height:16px;font-style:italic;}
+.sync-bar.saving{color:var(--honey);}
+.sync-bar.ok{color:var(--sage);}
+.sync-bar.err{color:var(--rose);}
+.date-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 12px;}
+.date-btn{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;cursor:pointer;font-size:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.date-btn:hover{background:var(--sage-pale);border-color:var(--sage);color:var(--sage);}
+.date-display{font-family:'Lora',serif;font-size:14px;font-style:italic;color:var(--ink);min-width:180px;text-align:center;}
+.tabs{display:flex;border-bottom:2px solid var(--border);}
+.tab{flex:1;padding:8px 4px;text-align:center;font-size:11px;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.tab.active{color:var(--sage);border-bottom-color:var(--sage);font-weight:500;}
+.sections{background:var(--surface);border:1px solid var(--border);border-top:none;padding:16px;margin-bottom:14px;}
+.section{display:none;}
+.section.active{display:block;}
+.mood-row{display:flex;justify-content:space-around;margin:10px 0 16px;}
+.mood-opt{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:transform .15s;}
+.mood-opt:hover{transform:scale(1.1);}
+.mood-emoji{font-size:28px;filter:grayscale(0.5);transition:filter .2s;}
+.mood-opt.selected .mood-emoji{filter:none;}
+.mood-opt.selected .mood-label{color:var(--sage);font-weight:500;}
+.mood-label{font-size:9px;color:var(--muted);}
+.mood-ring{width:44px;height:44px;border-radius:50%;border:2px solid transparent;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mood-opt.selected .mood-ring{border-color:var(--sage);background:var(--sage-pale);}
+.section-title{font-family:'Lora',serif;font-size:13px;font-style:italic;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.section-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--sage);border-radius:2px;}
+textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-family:'Lora',serif;font-size:13px;color:var(--ink);resize:vertical;line-height:1.8;min-height:80px;outline:none;transition:border .2s;}
+textarea:focus{border-color:var(--sage);}
+textarea::placeholder{color:var(--muted);font-style:italic;}
+.gratitud-list{display:flex;flex-direction:column;gap:6px;}
+.grat-row{display:flex;align-items:center;gap:8px;}
+.grat-num{font-family:'Lora',serif;font-size:11px;color:var(--muted);font-style:italic;min-width:16px;}
+.grat-input{flex:1;background:var(--surface2);border:none;border-bottom:1px solid var(--border);padding:5px 4px;font-family:'Lora',serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s;}
+.grat-input:focus{border-bottom-color:var(--sage);}
+.grat-input::placeholder{color:var(--muted);font-style:italic;}
+.intentions-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.int-chip{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:11px;cursor:pointer;color:var(--muted);background:var(--surface2);transition:all .2s;user-select:none;}
+.int-chip.sel{background:var(--sage-pale);border-color:var(--sage);color:var(--sage);}
+.int-input{background:var(--surface2);border:none;border-bottom:1px solid var(--border);padding:5px 4px;font-family:'Lora',serif;font-size:12px;color:var(--ink);outline:none;width:100%;}
+.int-input::placeholder{color:var(--muted);font-style:italic;}
+.stars-row{display:flex;gap:6px;margin:6px 0 12px;}
+.star{font-size:22px;cursor:pointer;opacity:0.35;transition:all .15s;}
+.star.lit{opacity:1;}
+.divider{border:none;border-top:1px dashed var(--border);margin:14px 0;}
+.save-btn{width:100%;padding:11px;background:var(--sage);color:white;border:none;border-radius:4px;font-family:'Lora',serif;font-size:13px;font-style:italic;cursor:pointer;transition:background .2s;}
+.save-btn:hover{background:#6a8e6e;}
+.save-btn:disabled{background:var(--muted);cursor:default;}
+.entries-header{font-family:'Lora',serif;font-size:15px;font-style:italic;color:var(--ink);margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+.entries-header::after{content:'';flex:1;height:1px;background:var(--border);}
+.entry-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--sage);padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.entry-card:hover{border-left-color:var(--rose);}
+.entry-card.open{border-left-color:var(--honey);}
+.entry-date{font-family:'Lora',serif;font-size:12px;font-style:italic;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.entry-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.entry-full{display:none;margin-top:10px;border-top:1px dashed var(--border);padding-top:10px;}
+.entry-card.open .entry-full{display:block;}
+.entry-section{margin-bottom:8px;}
+.entry-section-title{font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:3px;}
+.entry-text{font-family:'Lora',serif;font-size:12px;color:var(--ink);line-height:1.7;}
+.empty-entries{text-align:center;padding:24px;color:var(--muted);font-family:'Lora',serif;font-style:italic;font-size:13px;}
+.loading{text-align:center;padding:40px;color:var(--muted);font-family:'Lora',serif;font-style:italic;font-size:13px;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--ink);color:white;padding:8px 18px;border-radius:4px;font-size:12px;font-family:'Lora',serif;font-style:italic;opacity:0;transition:all .3s;z-index:999;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="top-border"></div>
+<div class="header">
+  <h1>Mi Diario <em>·</em> 2026</h1>
+  <div class="quote" id="dailyQuote"></div>
+</div>
+<div class="sync-bar" id="syncBar"></div>
+
+<div id="loadingScreen" class="loading">🌿 cargando tu diario…</div>
+
+<div id="appContent" style="display:none">
+  <div class="date-nav">
+    <button class="date-btn" onclick="changeDay(-1)">‹</button>
+    <div class="date-display" id="dateDisplay"></div>
+    <button class="date-btn" onclick="changeDay(1)">›</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('mood',this)">🌸 Ánimo</button>
+    <button class="tab" onclick="switchTab('gratitud',this)">🍃 Gratitud</button>
+    <button class="tab" onclick="switchTab('dia',this)">🌻 El día</button>
+    <button class="tab" onclick="switchTab('reflexion',this)">🌙 Reflexión</button>
+  </div>
+
+  <div class="sections">
+    <div class="section active" id="sec-mood">
+      <div class="section-title">¿Cómo me siento hoy?</div>
+      <div class="mood-row">
+        <div class="mood-opt" data-mood="difícil" onclick="selectMood(this)"><div class="mood-ring"><div class="mood-emoji">🌧️</div></div><span class="mood-label">difícil</span></div>
+        <div class="mood-opt" data-mood="bajita" onclick="selectMood(this)"><div class="mood-ring"><div class="mood-emoji">🍂</div></div><span class="mood-label">bajita</span></div>
+        <div class="mood-opt" data-mood="regular" onclick="selectMood(this)"><div class="mood-ring"><div class="mood-emoji">🌾</div></div><span class="mood-label">regular</span></div>
+        <div class="mood-opt" data-mood="bien" onclick="selectMood(this)"><div class="mood-ring"><div class="mood-emoji">🌼</div></div><span class="mood-label">bien</span></div>
+        <div class="mood-opt" data-mood="genial" onclick="selectMood(this)"><div class="mood-ring"><div class="mood-emoji">☀️</div></div><span class="mood-label">genial</span></div>
+      </div>
+      <div class="section-title">Cuéntame más…</div>
+      <textarea id="moodNote" placeholder="¿Qué hay detrás de este sentir hoy?" rows="4"></textarea>
+    </div>
+
+    <div class="section" id="sec-gratitud">
+      <div class="section-title">Tres cosas por las que estoy agradecida</div>
+      <div class="gratitud-list">
+        <div class="grat-row"><span class="grat-num">i.</span><input class="grat-input" id="g1" placeholder="Hoy agradezco…" type="text"></div>
+        <div class="grat-row"><span class="grat-num">ii.</span><input class="grat-input" id="g2" placeholder="También…" type="text"></div>
+        <div class="grat-row"><span class="grat-num">iii.</span><input class="grat-input" id="g3" placeholder="Y también…" type="text"></div>
+      </div>
+      <hr class="divider">
+      <div class="section-title">Intenciones para hoy</div>
+      <div class="intentions-wrap" id="intChips">
+        <div class="int-chip" onclick="toggleChip(this)">descansar</div>
+        <div class="int-chip" onclick="toggleChip(this)">ser amable</div>
+        <div class="int-chip" onclick="toggleChip(this)">crear algo</div>
+        <div class="int-chip" onclick="toggleChip(this)">moverme</div>
+        <div class="int-chip" onclick="toggleChip(this)">leer</div>
+        <div class="int-chip" onclick="toggleChip(this)">soltar</div>
+        <div class="int-chip" onclick="toggleChip(this)">conectar</div>
+        <div class="int-chip" onclick="toggleChip(this)">nutrirme</div>
+      </div>
+      <input class="int-input" id="intCustom" type="text" placeholder="+ añadir intención propia…">
+    </div>
+
+    <div class="section" id="sec-dia">
+      <div class="section-title">¿Qué pasó hoy?</div>
+      <textarea id="diaText" placeholder="Un momento, una conversación, algo pequeño o grande…" rows="5"></textarea>
+      <hr class="divider">
+      <div class="section-title">Una cosa bonita de hoy</div>
+      <textarea id="diaBonus" placeholder="Algo que quiero recordar…" rows="3"></textarea>
+    </div>
+
+    <div class="section" id="sec-reflexion">
+      <div class="section-title">Reflexión del día</div>
+      <textarea id="refText" placeholder="¿Qué aprendí? ¿Qué me costó? ¿Qué quiero soltar?" rows="5"></textarea>
+      <hr class="divider">
+      <div class="section-title">¿Cómo calificaría este día?</div>
+      <div class="stars-row">
+        <span class="star" data-v="1" onclick="setStar(1)">🌿</span>
+        <span class="star" data-v="2" onclick="setStar(2)">🌿</span>
+        <span class="star" data-v="3" onclick="setStar(3)">🌿</span>
+        <span class="star" data-v="4" onclick="setStar(4)">🌿</span>
+        <span class="star" data-v="5" onclick="setStar(5)">🌿</span>
+      </div>
+      <div class="section-title">Palabra del día</div>
+      <input class="grat-input" id="wordOfDay" style="width:100%" placeholder="Una palabra que resume este día…" type="text">
+    </div>
+  </div>
+
+  <button class="save-btn" id="saveBtn" onclick="saveEntry()">Guardar entrada ✦</button>
+
+  <div class="entries-header">Entradas anteriores</div>
+  <div id="entriesList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BIN_ID   = '6a239464da38895dfe8f81ab';
+const API_KEY  = '$2a$10$XxkSE.v5o0QdV1XJhTL6zeFPq9ZHWjOWSiYczbhnCY0s3ln4AzlGS';
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+const QUOTES=['Florece donde estés plantada.','Cada día es una página en blanco.','Pequeñas cosas, grandes memorias.','El presente es el único hogar que existe.','Eres suficiente, exactamente como eres hoy.','Incluso las raíces necesitan lluvia.','La gratitud convierte lo que tenemos en suficiente.','Respira. Estás exactamente donde debes estar.'];
+const DAYS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MONTHS_ES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MOOD_EMOJI={difícil:'🌧️',bajita:'🍂',regular:'🌾',bien:'🌼',genial:'☀️'};
+
+let currentDate = new Date();
+let currentMood = '';
+let currentStar = 0;
+let entries = {};
+
+document.getElementById('dailyQuote').textContent = '"' + QUOTES[new Date().getDate() % QUOTES.length] + '"';
+
+function dateKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function formatDate(d){ return `${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS_ES[d.getMonth()]} · ${d.getFullYear()}`; }
+
+function syncBar(msg, type){
+  const el = document.getElementById('syncBar');
+  el.textContent = msg;
+  el.className = 'sync-bar ' + (type||'');
+}
+
+async function fetchEntries(){
+  try {
+    syncBar('🌿 cargando…');
+    const res = await fetch(BASE_URL + '/latest', {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const json = await res.json();
+    entries = json.record.entradas || {};
+    syncBar('');
+  } catch(e) {
+    syncBar('⚠ no se pudo cargar', 'err');
+    entries = {};
+  }
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('appContent').style.display = 'block';
+  loadEntry();
+  renderEntries();
+}
+
+async function pushEntries(){
+  syncBar('🌿 guardando…', 'saving');
+  try {
+    const res = await fetch(BASE_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY
+      },
+      body: JSON.stringify({ entradas: entries })
+    });
+    if(!res.ok) throw new Error();
+    syncBar('✦ guardado', 'ok');
+    setTimeout(()=>syncBar(''), 2000);
+  } catch(e) {
+    syncBar('⚠ error al guardar — reintenta', 'err');
+  }
+}
+
+function changeDay(n){
+  const nd = new Date(currentDate);
+  nd.setDate(nd.getDate() + n);
+  if(nd > new Date()) return;
+  currentDate = nd;
+  loadEntry();
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function selectMood(el){
+  document.querySelectorAll('.mood-opt').forEach(m=>m.classList.remove('selected'));
+  el.classList.add('selected');
+  currentMood = el.dataset.mood;
+}
+
+function toggleChip(el){ el.classList.toggle('sel'); }
+
+function setStar(v){
+  currentStar = v;
+  document.querySelectorAll('.star').forEach(s=>s.classList.toggle('lit', parseInt(s.dataset.v)<=v));
+}
+
+function getSelectedChips(){
+  const chips = [...document.querySelectorAll('#intChips .int-chip.sel')].map(c=>c.textContent);
+  const custom = document.getElementById('intCustom').value.trim();
+  if(custom) chips.push(custom);
+  return chips;
+}
+
+async function saveEntry(){
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  const key = dateKey(currentDate);
+  entries[key] = {
+    mood: currentMood,
+    moodNote: document.getElementById('moodNote').value,
+    gratitud: [document.getElementById('g1').value, document.getElementById('g2').value, document.getElementById('g3').value],
+    intenciones: getSelectedChips(),
+    dia: document.getElementById('diaText').value,
+    diaBonus: document.getElementById('diaBonus').value,
+    reflexion: document.getElementById('refText').value,
+    star: currentStar,
+    word: document.getElementById('wordOfDay').value,
+    savedAt: new Date().toISOString()
+  };
+  await pushEntries();
+  renderEntries();
+  showToast('Entrada guardada 🌸');
+  btn.disabled = false;
+}
+
+function loadEntry(){
+  document.getElementById('dateDisplay').textContent = formatDate(currentDate);
+  const e = entries[dateKey(currentDate)] || {};
+  currentMood = e.mood || '';
+  currentStar = e.star || 0;
+  document.querySelectorAll('.mood-opt').forEach(m=>m.classList.toggle('selected', m.dataset.mood===currentMood));
+  document.getElementById('moodNote').value   = e.moodNote || '';
+  document.getElementById('g1').value         = (e.gratitud&&e.gratitud[0]) || '';
+  document.getElementById('g2').value         = (e.gratitud&&e.gratitud[1]) || '';
+  document.getElementById('g3').value         = (e.gratitud&&e.gratitud[2]) || '';
+  document.querySelectorAll('#intChips .int-chip').forEach(c=>c.classList.toggle('sel',(e.intenciones||[]).includes(c.textContent)));
+  document.getElementById('intCustom').value  = '';
+  document.getElementById('diaText').value    = e.dia || '';
+  document.getElementById('diaBonus').value   = e.diaBonus || '';
+  document.getElementById('refText').value    = e.reflexion || '';
+  document.getElementById('wordOfDay').value  = e.word || '';
+  document.querySelectorAll('.star').forEach(s=>s.classList.toggle('lit', parseInt(s.dataset.v)<=(e.star||0)));
+}
+
+function renderEntries(){
+  const list = document.getElementById('entriesList');
+  const keys = Object.keys(entries).sort().reverse();
+  if(!keys.length){
+    list.innerHTML = '<div class="empty-entries">🌷<br>Aún no hay entradas guardadas.<br>¡Esta será la primera!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  keys.forEach(k=>{
+    const e = entries[k];
+    const d = new Date(k+'T12:00:00');
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    const grats = (e.gratitud||[]).filter(g=>g).join(' · ') || '';
+    const preview = e.moodNote || e.dia || grats || 'Sin nota';
+    card.innerHTML = `
+      <div class="entry-date">
+        <span>${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS_ES[d.getMonth()]}</span>
+        <span>${MOOD_EMOJI[e.mood]||'🌿'} ${'🌿'.repeat(e.star||0)}</span>
+      </div>
+      <div class="entry-preview">${preview.substring(0,80)}</div>
+      <div class="entry-full">
+        ${e.moodNote?`<div class="entry-section"><div class="entry-section-title">Ánimo</div><div class="entry-text">${e.moodNote}</div></div>`:''}
+        ${grats?`<div class="entry-section"><div class="entry-section-title">Gratitud</div><div class="entry-text">${grats}</div></div>`:''}
+        ${(e.intenciones||[]).length?`<div class="entry-section"><div class="entry-section-title">Intenciones</div><div class="entry-text">${e.intenciones.join(' · ')}</div></div>`:''}
+        ${e.dia?`<div class="entry-section"><div class="entry-section-title">El día</div><div class="entry-text">${e.dia}</div></div>`:''}
+        ${e.diaBonus?`<div class="entry-section"><div class="entry-section-title">Momento bonito</div><div class="entry-text">${e.diaBonus}</div></div>`:''}
+        ${e.reflexion?`<div class="entry-section"><div class="entry-section-title">Reflexión</div><div class="entry-text">${e.reflexion}</div></div>`:''}
+        ${e.word?`<div class="entry-section"><div class="entry-section-title">Palabra del día</div><div class="entry-text"><em>${e.word}</em></div></div>`:''}
+      </div>`;
+    card.addEventListener('click', ()=>card.classList.toggle('open'));
+    list.appendChild(card);
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+fetchEntries();
+</script>
+</body>
+</html>
